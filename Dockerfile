@@ -1,10 +1,15 @@
-FROM ubuntu:latest
+FROM python:3.12-slim
 
-# Update the package list and install sudo and snapd
-RUN apt-get update && apt-get install -y sudo snapd
+# Update and install required packages
+RUN apt-get update && \
+    apt-get install -y \
+    prusa-slicer
 
-# Enable and start the snapd service
-RUN systemctl enable snapd && systemctl start snapd
+# Install requirements
+COPY requirements.txt /requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
-# Install prusa-slicer using snap
-RUN sudo snap install prusa-slicer
+# Copy application
+COPY app.py /app.py
+
+CMD ["python3", "/app.py"]
